@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Linting') {
+            steps {
+                script {
+                    sh 'flake8 .'
+                }
+            }
+        }
+        stage('Testing') {
+            steps {
+                script {
+                    sh 'pytest'
+                }
+            }
+        }
+        stage('Push Changes to GitHub') {
+            steps {
+                script {
+                    sh '''
+                    git config --global user.email "jaisonjacob.23cs@licet.ac.in"
+                    git config --global user.name "Jaison Jacob"
+                    git add .
+                    git commit -m "Automated commit: Update triangle area calculator"
+                    git push origin main
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        failure {
+            echo 'Pipeline failed!'
+        }
+        success {
+            echo 'Pipeline succeeded!'
+        }
+    }
+}
