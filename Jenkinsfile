@@ -5,7 +5,6 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 echo 'Checking out source code...'
-                // Pull source code from the repository (optional)
                 checkout scm
             }
         }
@@ -13,16 +12,22 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 echo 'Installing dependencies...'
-                // Example: If the program is in Python
-                sh 'pip install -r requirements.txt'
+                sh '''
+                    python3 -m venv venv         # Create a virtual environment
+                    . venv/bin/activate         # Activate the virtual environment
+                    pip install --upgrade pip   # Upgrade pip
+                    pip install -r requirements.txt # Install dependencies
+                '''
             }
         }
         
         stage('Run Triangle Area Program') {
             steps {
                 echo 'Running the Triangle Area program...'
-                // Example: Run a Python program
-                sh 'python triangle_area.py'
+                sh '''
+                    . venv/bin/activate         # Activate the virtual environment
+                    python triangle_area.py     # Run the script
+                '''
             }
         }
     }
