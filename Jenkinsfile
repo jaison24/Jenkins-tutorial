@@ -1,22 +1,19 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'python:3.12' // Use a Docker image with Python and venv pre-installed
+        }
+    }
 
     stages {
-        stage('Checkout Code') {
-            steps {
-                echo 'Checking out source code...'
-                checkout scm
-            }
-        }
-        
         stage('Install Dependencies') {
             steps {
-                echo 'Installing dependencies...'
+                echo 'Setting up virtual environment and installing dependencies...'
                 sh '''
-                    python3 -m venv venv         # Create a virtual environment
-                    . venv/bin/activate         # Activate the virtual environment
-                    pip install --upgrade pip   # Upgrade pip
-                    pip install -r requirements.txt # Install dependencies
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
                 '''
             }
         }
@@ -25,8 +22,8 @@ pipeline {
             steps {
                 echo 'Running the Triangle Area program...'
                 sh '''
-                    . venv/bin/activate         # Activate the virtual environment
-                    python triangle_area.py     # Run the script
+                    . venv/bin/activate
+                    python triangle_area.py
                 '''
             }
         }
